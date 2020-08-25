@@ -21,7 +21,7 @@ class MenuItem {
       menuItems[categoryName].add(Item(
           categoryName: categoryName,
           description: description,
-          imageUrl: imageUrl,
+          imageURL: imageUrl,
           isVeg: isVeg,
           itemName: itemName,
           price: price,
@@ -33,7 +33,7 @@ class MenuItem {
           Item(
               categoryName: categoryName,
               description: description,
-              imageUrl: imageUrl,
+              imageURL: imageUrl,
               isVeg: isVeg,
               itemName: itemName,
               price: price,
@@ -41,7 +41,7 @@ class MenuItem {
         ],
       );
     }
-    print(menuItems);
+    print({"menuItems", menuItems});
   }
 }
 

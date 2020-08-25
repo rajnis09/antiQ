@@ -1,14 +1,19 @@
 import 'dart:io';
 
-import 'package:antiq/models/menu_items.dart';
 import 'package:flutter/material.dart';
-
-import 'package:antiq/utils/auth/auth_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../views/category.dart';
+import '../providers/category_items_provider.dart';
+import '../models/item_model.dart';
+
+import '../utils/auth/auth_handler.dart';
 import '../utils/forms/validators.dart';
 
 class AddMenuItems extends StatefulWidget {
+  static const routeName = '/addMenuItems';
+
   @override
   _AddMenuItemsState createState() => _AddMenuItemsState();
 }
@@ -43,6 +48,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<CategoryItemsProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -167,7 +173,8 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           ),
                           keyboardType: TextInputType.number,
                           validator: validator.validatePrice,
-                          onSaved: (newValue) => _price = double.parse(newValue),
+                          onSaved: (newValue) =>
+                              _price = double.parse(newValue),
                         ),
                       ),
 
@@ -309,57 +316,84 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                               height: 45,
                               width: 300,
                               child: MaterialButton(
-                                splashColor: Colors.white30,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                color: Theme.of(context).primaryColor,
-                                elevation: 5.0,
-                                child: Center(
-                                  child: Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                                  splashColor: Colors.white30,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                ),
-                                onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    if (_isVeg == null) {
-                                      _scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                        'Food type must be selected',
-                                        style: TextStyle(color: Colors.yellow),
-                                      )));
-                                    } else if (_imagePath == null) {
-                                      _scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                        'Select an image by pressing on it',
-                                        style: TextStyle(color: Colors.yellow),
-                                      )));
+                                  color: Theme.of(context).primaryColor,
+                                  elevation: 5.0,
+                                  child: Center(
+                                    child: Text(
+                                      'Submit',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (_formKey.currentState.validate()) {
+                                      if (_isVeg == null) {
+                                        _scaffoldKey.currentState
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                          'Food type must be selected',
+                                          style:
+                                              TextStyle(color: Colors.yellow),
+                                        )));
+                                      } else if (_imagePath == null) {
+                                        _scaffoldKey.currentState
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                          'Select an image by pressing on it',
+                                          style:
+                                              TextStyle(color: Colors.yellow),
+                                        )));
+                                      } else {
+                                        _formKey.currentState.save();
+                                        // menuItem.addMenuItem(
+                                        //     _categoryName,
+                                        //     _itemName,
+                                        //     _description,
+                                        //     _imagePath,
+                                        //     _price,
+                                        //     _isVeg,
+                                        //     _customizablesName,
+                                        //     _customizablesPrice);
+                                        // print(_imagePath);
+                                        final List<Customizables>
+                                            customizables = [];
+                                        for (int i = 0;
+                                            i < _customizablesName.length;
+                                            i++) {
+                                          final item = Customizables(
+                                            _customizablesName[i],
+                                            _customizablesPrice[i],
+                                          );
+                                          customizables.add(item);
+                                        }
+                                        final item = Item(
+                                          categoryName: _categoryName,
+                                          itemName: _itemName,
+                                          description: _description,
+                                          imageURL: _imagePath,
+                                          isVeg: _isVeg,
+                                          price: _price,
+                                          customizables: customizables,
+                                        );
+                                        provider.addItem(item).then(
+                                              (_) =>
+                                                  Navigator.of(context).pop(),
+                                            );
+
+                                        // print('validated');
+                                      }
                                     } else {
-                                      _formKey.currentState.save();
-                                      menuItem.addMenuItem(
-                                          _categoryName,
-                                          _itemName,
-                                          _description,
-                                          _imagePath,
-                                          _price,
-                                          _isVeg,
-                                          _customizablesName,
-                                          _customizablesPrice);
-                                      print('validated');
+                                      setState(() {
+                                        _autoValidate = true;
+                                      });
                                     }
-                                  } else {
-                                    setState(() {
-                                      _autoValidate = true;
-                                    });
-                                  }
-                                },
-                              ),
+                                  }),
                             ),
                       SizedBox(height: 15),
                     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../utils/theme/theme_data.dart';
+import '../utils/forms/auto_accept_form.dart';
 
 // Dialog used to serve proper notification popups to user
 notificationDialog(BuildContext context, String title, String notification) {
@@ -98,4 +99,32 @@ Future<String> otpRetrieveDialog(BuildContext context) {
         );
       });
   return Future.value(otp);
+}
+
+Future<bool> scheduleDialog(BuildContext context) {
+  return showModalBottomSheet(
+    context: context,
+    builder: (ctx) => AutoAcceptForm(),
+  );
+}
+
+Future<bool> confirmDeleteDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => AlertDialog(
+      title: Text('Delete'),
+      content: Text('Are you sure you want to delete this item?'),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          child: Text('Yes'),
+        ),
+        FlatButton(
+          onPressed: () => Navigator.of(ctx).pop(false),
+          child: Text('No'),
+        ),
+      ],
+    ),
+  );
 }

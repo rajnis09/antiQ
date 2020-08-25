@@ -1,20 +1,22 @@
 class Item {
-  // int itemId;
+  final int itemId;
   final String categoryName;
   final String itemName;
   final String description;
-  final String imageUrl;
+  final String imageURL;
   final double price;
   final bool isVeg;
   final List<Customizables> customizables;
-  Item(
-      {this.categoryName,
-      this.itemName,
-      this.description,
-      this.imageUrl,
-      this.isVeg,
-      this.price,
-      this.customizables});
+  Item({
+    this.itemId,
+    this.categoryName,
+    this.itemName,
+    this.description,
+    this.imageURL,
+    this.isVeg,
+    this.price,
+    this.customizables,
+  });
 }
 
 class Customizables {
