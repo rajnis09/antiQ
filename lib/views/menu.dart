@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../views/category.dart';
 import '../providers/category_items_provider.dart';
 import '../models/item_model.dart';
 

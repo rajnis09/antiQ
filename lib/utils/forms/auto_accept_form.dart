@@ -58,7 +58,8 @@ class _AutoAcceptFormState extends State<AutoAcceptForm> {
         ),
         elevation: 0,
         leading: null,
-        leadingWidth: 0,
+        
+        // leadingWidth: 0,
         actions: <Widget>[
           IconButton(
             icon: Icon(

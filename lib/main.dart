@@ -10,9 +10,10 @@ import './views/authentication/signin_page.dart';
 import './views/authentication/signUp_phone_page.dart';
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
-import './views/add_menu_items.dart';
+import './views/menu.dart';
 import './views/edit_category.dart';
 import './views/category.dart';
+import 'views/bottom_navigation_bar.dart';
 
 void main() {
   runApp(MyApp());
@@ -85,6 +86,7 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => SplashScreen(),
           '/logInPage': (context) => LoginPage(),
           '/signUpPhonePage': (context) => SignUpPhonePage(),
+          '/homePage':(context)=>CustomBottomNavigationBar(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
           Category.routeName: (context) => Category(),
           EditCategory.routeName: (context) => EditCategory(),
