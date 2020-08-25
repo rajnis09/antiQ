@@ -13,7 +13,7 @@ import './providers/connectivity_provider.dart';
 import './views/menu.dart';
 import './views/edit_category.dart';
 import './views/category.dart';
-import 'views/bottom_navigation_bar.dart';
+import './views/bottom_navigation_bar.dart';
 
 void main() {
   runApp(MyApp());
@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         routes: <String, WidgetBuilder>{
-          '/': (context) => SplashScreen(),
+          '/': (context) => LoginPage(),//SplashScreen(),
           '/logInPage': (context) => LoginPage(),
           '/signUpPhonePage': (context) => SignUpPhonePage(),
           '/homePage':(context)=>CustomBottomNavigationBar(),

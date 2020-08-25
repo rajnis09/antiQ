@@ -86,7 +86,7 @@ class _OrdersPageState extends State<OrdersPage>
           children: [
             Container(
               child: Text(
-                "${orders[index].id}",
+                "ID : ${orders[index].id}",
               ),
             ),
             Container(
@@ -147,7 +147,7 @@ class _OrdersPageState extends State<OrdersPage>
               width: 8,
             ),
             Text(
-              orders[index].ordererName + "1st order",
+              orders[index].ordererName+"'s 1st order",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.blueGrey,
