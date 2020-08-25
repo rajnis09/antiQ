@@ -1,5 +1,4 @@
-import 'package:antiq/utils/auth/auth_handler.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:antiq/providers/category_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +11,8 @@ import './views/authentication/signUp_phone_page.dart';
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
 import './views/add_menu_items.dart';
+import './views/edit_category.dart';
+import './views/category.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,6 +37,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         StreamProvider<ConnectionStatus>.value(
           value: ConnectivityService().connectivityController.stream,
+        ),
+        ChangeNotifierProvider.value(
+          value: CategoryItemsProvider(),
         ),
       ],
       child: MaterialApp(
@@ -81,7 +85,9 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => SplashScreen(),
           '/logInPage': (context) => LoginPage(),
           '/signUpPhonePage': (context) => SignUpPhonePage(),
-          '/addMenuItemsPage': (context) => AddMenuItems(),
+          AddMenuItems.routeName: (context) => AddMenuItems(),
+          Category.routeName: (context) => Category(),
+          EditCategory.routeName: (context) => EditCategory(),
         },
         onUnknownRoute: (settings) => MaterialPageRoute(
           builder: (context) => ErrorPage(),
