@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import './utils/theme/theme_data.dart';
 import './views/splash_Screen.dart';
+import './views/shop_info.dart';
 import './views/authentication/signin_page.dart';
 import './views/authentication/signUp_phone_page.dart';
 import './views/error/error_page.dart';
@@ -14,6 +15,7 @@ import './views/menu.dart';
 import './views/edit_category.dart';
 import './views/category.dart';
 import './views/bottom_navigation_bar.dart';
+import './widgets/ordered_history.dart';
 
 void main() {
   runApp(MyApp());
@@ -83,10 +85,12 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         routes: <String, WidgetBuilder>{
-          '/': (context) => LoginPage(),//SplashScreen(),
+          '/': (context) => LoginPage(), //SplashScreen(),
           '/logInPage': (context) => LoginPage(),
           '/signUpPhonePage': (context) => SignUpPhonePage(),
-          '/homePage':(context)=>CustomBottomNavigationBar(),
+          '/homePage': (context) => CustomBottomNavigationBar(),
+          '/shopInfo': (context) => ShopInfo(),
+          '/orderHistory': (context) => OrderedHistory(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
           Category.routeName: (context) => Category(),
           EditCategory.routeName: (context) => EditCategory(),
