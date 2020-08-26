@@ -7,6 +7,7 @@ class OrderDetails {
   String paymentStatus;
   int totalquantity;
   double totalPrice;
+  String endStatus;
   List<Item> items;
 
   OrderDetails(
@@ -18,6 +19,7 @@ class OrderDetails {
       this.paymentStatus,
       this.totalquantity,
       this.totalPrice,
+      this.endStatus,
       this.items});
 }
 

@@ -24,7 +24,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     final List<Widget> _pages = [
       AcceptingOrdersPage(),
       AddMenuItems(),
-      MorePage(),
+      More(),
     ];
 
     return Scaffold(
@@ -77,7 +77,6 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             iconData: Icons.menu,
             text: 'More',
           ),
-          
         ],
       ),
     );
