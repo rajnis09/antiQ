@@ -1,35 +1,81 @@
 import 'package:flutter/material.dart';
 import '../providers/sample_order_data.dart';
-// void main() => runApp(OrdersPage());
+import '../widgets/timer.dart';
 
 class OrdersPage extends StatefulWidget {
   @override
   _OrdersPageState createState() => _OrdersPageState();
 }
 
-class _OrdersPageState extends State<OrdersPage>
-    with SingleTickerProviderStateMixin {
-  AnimationController controller;
+class _OrdersPageState extends State<OrdersPage>{
+  //   with SingleTickerProviderStateMixin {
+  // AnimationController controller;
 
-  String get timerString {
-    Duration duration = controller.duration * controller.value;
-    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-  }
+  // String get timerString {
+  //   Duration duration = controller.duration * controller.value;
+  //   return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+  // }
 
-  @override
-  void initState() {
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 600),
-    );
-    controller.reverse(from: controller.value == 0.0 ? 1.0 : controller.value);
-    controller.addListener(() {
-      // print(timerString);
-    });
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   controller = AnimationController(
+  //     vsync: this,
+  //     duration: Duration(seconds: 600),
+  //   );
+  //   controller.reverse(from: controller.value == 0.0 ? 1.0 : controller.value);
+  //   // controller.addListener(() {
+  //   //   // print(timerString);
+  //   // });
+  //   setState(() {
+  //     timerString;
+  //   });
+  //   super.initState();
+  // }
+
+  // // void showremainingtime() {
+  // //   setState(() {
+  // //     timerString;
+  // //   });
+  // // }
+
+  // @override
+  // void dispose() {
+  //   controller.dispose();
+  //   super.dispose();
+  // }
 
   final orders = SampleData.fetchAll();
+  bool hasTimerStopped = false;
+
+  // String calculatetotalPrice() {
+  //   double totalAmmount = 0.0;
+  //   for (var i = 0; i < orders.length; i++) {
+  //     for (var j = 0; j < orders[i].items.length; j++) {
+  //       totalAmmount = totalAmmount + orders[i].items[j].itemPrice;
+  //     }
+  //   }
+  //   return totalAmmount.toString();
+  // }
+
+  // String calculatetotalquantity() {
+  //   int totalquantity = 0;
+  //   for (var i = 0; i < orders.length; i++) {
+  //     for (var j = 0; j < orders[i].items.length; j++) {
+  //       totalquantity = totalquantity + orders[i].items[j].itemQuantity;
+  //     }
+  //   }
+  //   return totalquantity.toString();
+  // }
+
+  // String totalitemNames() {
+  //   String names = "";
+  //   for (var i = 0; i < orders.length; i++) {
+  //     for (var j = 0; j < orders[i].items.length; j++) {
+  //       names = names + orders[i].items[j].itemName;
+  //     }
+  //   }
+  //   return names;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +133,7 @@ class _OrdersPageState extends State<OrdersPage>
             Container(
               child: Text(
                 "ID : ${orders[index].id}",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Container(
@@ -100,23 +147,48 @@ class _OrdersPageState extends State<OrdersPage>
               SizedBox(
                 width: 2,
               ),
-              GestureDetector(
-                child: Icon(Icons.more_vert),
-                onTap: () {
-                  print('clicked');
-                },
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    child: InkWell(
+                      // splash color
+                      onTap: () {
+                        print("Call Customer");
+                      }, // button pressed
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.call),
+                          SizedBox(width: 10),
+                          Text("Call Customer"), // text
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: InkWell(
+                      // splash color
+                      onTap: () {
+                        print("Support");
+                      }, // button pressed
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.help),
+                          SizedBox(width: 10), // icon
+                          Text("Support"), // text
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ])),
           ],
-        ),
-        SizedBox(
-          height: 6,
         ),
         Row(
           children: [
             Container(
               height: 30,
-              width: 80,
+              width: 100,
               // margin: EdgeInsets.all(10),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -143,16 +215,6 @@ class _OrdersPageState extends State<OrdersPage>
                 ],
               ),
             ),
-            SizedBox(
-              width: 8,
-            ),
-            Text(
-              orders[index].ordererName+"'s 1st order",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey,
-              ),
-            ),
           ],
         ),
       ],
@@ -169,7 +231,7 @@ class _OrdersPageState extends State<OrdersPage>
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -227,7 +289,7 @@ class _OrdersPageState extends State<OrdersPage>
             ...orders[index]
                 .items
                 .map((data) => ListTile(
-                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                     contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                     title: itemdetails(
                         data.itemName, data.itemQuantity, data.itemPrice)))
@@ -260,9 +322,15 @@ class _OrdersPageState extends State<OrdersPage>
       width: double.infinity,
       height: 40,
       alignment: Alignment.center,
-      child: Text(
-        "ORDER READY ($timerString)",
-        style: TextStyle(
+      child: CountDownTimer(
+        secondsRemaining: 600,
+        whenTimeExpires: () {
+          setState(() {
+            hasTimerStopped = true;
+          });
+        },
+        countDownTimerStyle:
+            TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),

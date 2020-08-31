@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/category_item.dart';
-import '../views/menu.dart';
+import '../views/add_menu_items.dart';
 // import './orders.dart';
 
 class Category extends StatelessWidget {
