@@ -104,7 +104,7 @@ class _MoreState extends State<More> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed('/shopInfo');
+                Navigator.of(context).pushNamed('/profilepage');
               },
               child: Container(
                 width: double.infinity,

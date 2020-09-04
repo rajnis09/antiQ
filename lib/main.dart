@@ -1,4 +1,5 @@
 import 'package:antiq/providers/category_items_provider.dart';
+import 'package:antiq/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +12,7 @@ import './views/authentication/signin_page.dart';
 import './views/authentication/signUp_phone_page.dart';
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
-import './views/menu.dart';
+import './views/add_menu_items.dart';
 import './views/edit_category.dart';
 import './views/category.dart';
 import './views/bottom_navigation_bar.dart';
@@ -90,6 +91,7 @@ class _MyAppState extends State<MyApp> {
           '/signUpPhonePage': (context) => SignUpPhonePage(),
           '/homePage': (context) => CustomBottomNavigationBar(),
           '/shopInfo': (context) => ShopInfo(),
+          '/profilepage' : (context)=>ProfilePage(),
           '/orderHistory': (context) => OrderedHistory(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
           Category.routeName: (context) => Category(),
