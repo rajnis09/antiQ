@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class Auth {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser _user;
-  FirebaseAuth get auth => _auth;
+  static final String appMadeFor = 'seller';
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
+  firebase_auth.User _user;
+  firebase_auth.FirebaseAuth get auth => _auth;
 
-  Future<FirebaseUser> getCurrentUser() async {
+  firebase_auth.User getCurrentUser() {
     try {
-      _user = await _auth.currentUser();
+      _user = _auth.currentUser;
     } catch (e) {
       _user = null;
       print('authHandler: error in currentUser $e');
@@ -19,47 +20,47 @@ class Auth {
 
   Future<void> userReload() async {
     try {
-      _user = await _auth.currentUser();
+      _user = _auth.currentUser;
       await _user.reload();
-      _user = await _auth.currentUser();
+      _user = _auth.currentUser;
     } catch (e) {
       print("authHandler: Error in userReload $e");
     }
   }
 
-  Future<int> phoneUserLoginOrRegister(AuthCredential credential) async {
+  Future<int> phoneUserLoginOrRegister(
+      firebase_auth.AuthCredential credential) async {
     int res = 0;
-    AuthResult authResult;
+    firebase_auth.UserCredential authResult;
     try {
       authResult = await _auth.signInWithCredential(credential);
       _user = authResult.user;
       print("Signed IN");
       if (authResult.additionalUserInfo.isNewUser) {
-        // await updateUserData(name, null);
-        // await getCurrentUser();
-        // await userReload();
-        // await getCurrentUser();
+        _user = _auth.currentUser;
         print('New User');
         res = 1;
       }
       print('In authahndler ${_user.phoneNumber}');
-    } catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      print('Error in authHanadler ${e.message}');
       switch (e.code) {
-        case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+        case 'account-exists-with-different-credential':
           res = 2;
           break;
-        case 'ERROR_INVALID_CREDENTIAL':
+        case 'invalid-credential':
           res = 3;
           break;
-        case 'ERROR_USER_DISABLED':
+        case 'user-disabled':
           res = 4;
           break;
-        case 'ERROR_OPERATION_NOT_ALLOWED':
+        case 'operation-not-allowed':
           res = 5;
           break;
-        case 'ERROR_INVALID_ACTION_CODE':
+        case 'invalid-verification-code':
           res = 6;
           break;
+        // invalid-verification-id or other type of errors
         default:
           res = 7;
           break;
@@ -68,17 +69,12 @@ class Auth {
     return res;
   }
 
-  Future<void> signOut() async {
+  void signOut() async {
     if (_auth != null) await _auth.signOut();
   }
 
   Future<void> updateUserData(String name, String photoUrl) async {
-    UserUpdateInfo updateInfo = UserUpdateInfo();
-    updateInfo.displayName = name;
-    updateInfo.photoUrl = photoUrl ??
-        "https://drive.google.com/uc?export=download&id=1hBu6cfZvlVFm3-AB8PBx2K4AZoiAXf4e";
-    _user = await _auth.currentUser();
-    await _user.updateProfile(updateInfo);
+    _user = _auth.currentUser;
   }
 }
 

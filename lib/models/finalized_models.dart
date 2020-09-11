@@ -1,9 +1,9 @@
-class SellerProfile {
-  String name;
-  String email;
-  String phoneNumber;
-  String imageURL;
-}
+// class SellerProfile {
+//   String name;
+//   String email;
+//   String phoneNumber;
+//   String imageURL;
+// }
 
 class ShopProfile {
   String shopId;

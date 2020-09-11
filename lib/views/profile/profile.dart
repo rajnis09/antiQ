@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../providers/profile_provider.dart';
 import '../../utils/auth/auth_handler.dart';
 import '../../utils/theme/theme_data.dart';
 import '../../models/list_profile_section.dart';
@@ -17,12 +19,8 @@ class _ProfilePageState extends State<ProfilePage> {
   File _image;
   bool selected = false;
   bool isPersonal = true;
+  String tag1, tag2;
 
-  void handlechange() {
-    setState(() {
-      isPersonal = isPersonal ? false : true;
-    });
-  }
   // profile:
   // shop:
   //  SignUpWithPhoneForm data = SignUpWithPhoneForm(
@@ -117,6 +115,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ProfileProvider>(context);
+    provider.fetchSellerProfile();
+    List<bool> data = ModalRoute.of(context).settings.arguments;
+    isPersonal = data[0];
+    tag1 = data[1] ? 'bigger' : 'smaller';
+    tag2 = data[2] ? 'bigger' : 'smaller';
     final List<ListProfileSection> listSection = [
       isPersonal
           ? createSection(
@@ -136,16 +140,14 @@ class _ProfilePageState extends State<ProfilePage> {
       createSection(
         'Logout',
         Icons.exit_to_app,
-        () async {
-          if (await authHandler.getCurrentUser() != null) {
-            authHandler.signOut();
-          }
+        () {
+          authHandler.signOut();
+          provider.removeLocalSessionSellerProfile();
           Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
         },
       ),
     ];
 
-    // print("third ${listSection.length}");
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       body: SingleChildScrollView(
@@ -204,32 +206,40 @@ class _ProfilePageState extends State<ProfilePage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
                                     GestureDetector(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey.shade400,
-                                                width: 1.5),
-                                            shape: BoxShape.circle,
-                                            image: isPersonal
-                                                ? DecorationImage(
-                                                    image: selected == false
-                                                        ? AssetImage(
-                                                            "assets/images/404-page.png")
-                                                        : FileImage(_image),
-                                                    fit: BoxFit.cover)
-                                                : DecorationImage(
-                                                    image: selected == false
-                                                        ? AssetImage(
-                                                            "assets/images/restaurant.png")
-                                                        : FileImage(_image),
-                                                    fit: BoxFit.cover)),
-                                        width: 40,
-                                        height: 40,
+                                      child: Hero(
+                                        tag: tag1,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey.shade400,
+                                                  width: 1.5),
+                                              shape: BoxShape.circle,
+                                              image: isPersonal
+                                                  ? DecorationImage(
+                                                      image: selected == false
+                                                          ? NetworkImage(
+                                                              provider.profile
+                                                                  .imageURL)
+                                                          : FileImage(_image),
+                                                      fit: BoxFit.cover)
+                                                  : DecorationImage(
+                                                      image: selected == false
+                                                          ? AssetImage(
+                                                              "assets/images/restaurant.png")
+                                                          : FileImage(_image),
+                                                      fit: BoxFit.cover)),
+                                          width: 40,
+                                          height: 40,
+                                        ),
                                       ),
-                                      onTap: () => {
-                                        handlechange(),
-                                        print("change profile"),
-                                      },
+                                      onTap: () =>
+                                          Navigator.pushReplacementNamed(
+                                              context, '/profilepage',
+                                              arguments: [
+                                            !data[0],
+                                            !data[1],
+                                            !data[2]
+                                          ]),
                                     ),
                                     SizedBox(
                                       width: 5,
@@ -247,14 +257,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               Text(
-                                isPersonal ? "Yash Khandelwal" : "Shop Name",
+                                isPersonal
+                                    ? provider.profile.name
+                                    : provider.profile.shopName,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900),
                               ),
                               Text(
-                                isPersonal ? "8745986231" : "ID : 7894145141",
+                                isPersonal
+                                    ? provider.profile.phoneNumber
+                                    : provider.profile.shopPhoneNumber,
                                 style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontSize: 16,
@@ -262,15 +276,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Text(
                                 isPersonal
-                                    ? "khandelwalyashykc@gmail.com"
-                                    : "Shop Address",
+                                    ? provider.profile.email
+                                    : provider.profile.shopAddress,
                                 style: TextStyle(
                                     color: Colors.grey.shade700, fontSize: 14),
                               ),
                               Container(
                                   child: !isPersonal
                                       ? Text(
-                                          "Description",
+                                          provider.profile.shopDescription,
                                           style: TextStyle(
                                               color: Colors.grey.shade700,
                                               fontSize: 14),
@@ -352,27 +366,30 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: 100,
                             child: Stack(
                               children: <Widget>[
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey.shade400,
-                                          width: 2),
-                                      shape: BoxShape.circle,
-                                      image: isPersonal
-                                          ? DecorationImage(
-                                              image: selected == false
-                                                  ? AssetImage(
-                                                      "assets/images/restaurant.png")
-                                                  : FileImage(_image),
-                                              fit: BoxFit.cover)
-                                          : DecorationImage(
-                                              image: selected == false
-                                                  ? AssetImage(
-                                                      "assets/images/404-page.png")
-                                                  : FileImage(_image),
-                                              fit: BoxFit.cover)),
-                                  width: 100,
-                                  height: 100,
+                                Hero(
+                                  tag: tag2,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey.shade400,
+                                            width: 2),
+                                        shape: BoxShape.circle,
+                                        image: isPersonal
+                                            ? DecorationImage(
+                                                image: selected == false
+                                                    ? AssetImage(
+                                                        "assets/images/restaurant.png")
+                                                    : FileImage(_image),
+                                                fit: BoxFit.cover)
+                                            : DecorationImage(
+                                                image: selected == false
+                                                    ? NetworkImage(provider
+                                                        .profile.imageURL)
+                                                    : FileImage(_image),
+                                                fit: BoxFit.cover)),
+                                    width: 100,
+                                    height: 100,
+                                  ),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomRight,

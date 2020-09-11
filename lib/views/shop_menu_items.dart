@@ -1,13 +1,14 @@
-import 'package:antiq/providers/category_items_provider.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 
-import '../widgets/category_item.dart';
-import '../views/add_menu_items.dart';
 // import './orders.dart';
+import './add_menu_items.dart';
+import '../widgets/category_item.dart';
+import '../providers/category_items_provider.dart';
 
-class Category extends StatelessWidget {
-  static const routeName = '/category';
+class ShopMenuItems extends StatelessWidget {
+  static const routeName = '/shopMenuItems';
 
   @override
   Widget build(BuildContext context) {
