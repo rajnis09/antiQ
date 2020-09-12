@@ -23,11 +23,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     ];
     final List<Widget> _pages = [
       AcceptingOrdersPage(),
-<<<<<<< HEAD
-      AddMenuItems(),
-=======
       ShopMenuItems(),
->>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
       More(),
     ];
 

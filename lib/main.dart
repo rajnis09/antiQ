@@ -11,11 +11,6 @@ import './views/profile/profile.dart';
 import './utils/theme/theme_data.dart';
 import './views/splash_Screen.dart';
 import './views/shop_info.dart';
-<<<<<<< HEAD
-import './views/authentication/signin_page.dart';
-import './views/authentication/signUp_phone_page.dart';
-=======
->>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
 import './views/add_menu_items.dart';
@@ -23,10 +18,7 @@ import './views/edit_category.dart';
 import './views/shop_menu_items.dart';
 import './views/bottom_navigation_bar.dart';
 import './widgets/ordered_history.dart';
-<<<<<<< HEAD
-=======
 import './views/authentication/newsignin_page.dart';
->>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,20 +88,12 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         routes: <String, WidgetBuilder>{
-<<<<<<< HEAD
-          '/': (context) => LoginPage(), //SplashScreen(),
-          '/logInPage': (context) => LoginPage(),
-          '/signUpPhonePage': (context) => SignUpPhonePage(),
-          '/homePage': (context) => CustomBottomNavigationBar(),
-          '/shopInfo': (context) => ShopInfo(),
-=======
           '/': (context) => SplashScreen(),
           '/logInPage': (context) => NewSignInPage(),
           '/registration': (context) => Registration(),
           '/homePage': (context) => CustomBottomNavigationBar(),
           '/shopInfo': (context) => ShopInfo(),
           '/profilepage': (context) => ProfilePage(),
->>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
           '/orderHistory': (context) => OrderedHistory(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
           ShopMenuItems.routeName: (context) => ShopMenuItems(),
