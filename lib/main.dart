@@ -1,23 +1,36 @@
-import 'package:antiq/providers/category_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import './utils/forms/registration_form.dart';
+import './providers/category_items_provider.dart';
+import './providers/profile_provider.dart';
+import './views/profile/profile.dart';
 import './utils/theme/theme_data.dart';
 import './views/splash_Screen.dart';
 import './views/shop_info.dart';
+<<<<<<< HEAD
 import './views/authentication/signin_page.dart';
 import './views/authentication/signUp_phone_page.dart';
+=======
+>>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
-import './views/menu.dart';
+import './views/add_menu_items.dart';
 import './views/edit_category.dart';
-import './views/category.dart';
+import './views/shop_menu_items.dart';
 import './views/bottom_navigation_bar.dart';
 import './widgets/ordered_history.dart';
+<<<<<<< HEAD
+=======
+import './views/authentication/newsignin_page.dart';
+>>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -39,11 +52,9 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         StreamProvider<ConnectionStatus>.value(
-          value: ConnectivityService().connectivityController.stream,
-        ),
-        ChangeNotifierProvider.value(
-          value: CategoryItemsProvider(),
-        ),
+            value: ConnectivityService().connectivityController.stream),
+        ChangeNotifierProvider.value(value: CategoryItemsProvider()),
+        ChangeNotifierProvider.value(value: ProfileProvider()),
       ],
       child: MaterialApp(
         title: 'antiQ',
@@ -85,14 +96,23 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         routes: <String, WidgetBuilder>{
+<<<<<<< HEAD
           '/': (context) => LoginPage(), //SplashScreen(),
           '/logInPage': (context) => LoginPage(),
           '/signUpPhonePage': (context) => SignUpPhonePage(),
           '/homePage': (context) => CustomBottomNavigationBar(),
           '/shopInfo': (context) => ShopInfo(),
+=======
+          '/': (context) => SplashScreen(),
+          '/logInPage': (context) => NewSignInPage(),
+          '/registration': (context) => Registration(),
+          '/homePage': (context) => CustomBottomNavigationBar(),
+          '/shopInfo': (context) => ShopInfo(),
+          '/profilepage': (context) => ProfilePage(),
+>>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
           '/orderHistory': (context) => OrderedHistory(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
-          Category.routeName: (context) => Category(),
+          ShopMenuItems.routeName: (context) => ShopMenuItems(),
           EditCategory.routeName: (context) => EditCategory(),
         },
         onUnknownRoute: (settings) => MaterialPageRoute(

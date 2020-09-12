@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../utils/theme/theme_data.dart';
-import '../views/menu.dart';
-import '../views/more.dart';
 import '../views/accepting_orders.dart';
+import '../views/more.dart';
+import '../views/shop_menu_items.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   @override
@@ -23,7 +23,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     ];
     final List<Widget> _pages = [
       AcceptingOrdersPage(),
+<<<<<<< HEAD
       AddMenuItems(),
+=======
+      ShopMenuItems(),
+>>>>>>> 13c78d1cb6f00c5c811a8413529a5622254fd57a
       More(),
     ];
 

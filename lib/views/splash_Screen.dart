@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utils/theme/theme_data.dart';
 import '../utils/auth/auth_handler.dart';
-import '../views/category.dart';
+import '../utils/theme/theme_data.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -21,14 +20,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void initializingApplication() {
-    Future.delayed(Duration(seconds: 1), () async {
-      var user = await authHandler.getCurrentUser();
-
-      // TODO: Change route name accordingly
+    Future.delayed(Duration(seconds: 1), () {
+      var user = authHandler.getCurrentUser();
       if (user != null) {
-        Navigator.pushReplacementNamed(context, Category.routeName);
+        Navigator.pushReplacementNamed(context, '/homePage');
       } else {
-        Navigator.pushReplacementNamed(context, Category.routeName);
+        Navigator.pushReplacementNamed(context, '/logInPage');
       }
     });
   }

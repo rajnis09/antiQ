@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../providers/category_items_provider.dart';
 import '../models/item_model.dart';
-
-import '../utils/auth/auth_handler.dart';
 import '../utils/forms/validators.dart';
 
 class AddMenuItems extends StatefulWidget {
@@ -56,8 +55,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
           IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              authHandler.signOut();
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+              
             },
           ),
         ],
@@ -148,9 +146,10 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
-                          maxLength: 100,
+                          // maxLines: 2,
                           decoration: InputDecoration(
                             labelText: 'Description',
+                            
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.green),
                             ),
@@ -187,7 +186,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           ),
                           Wrap(
                             children: [
-                              FilterChip(
+                              FilterChip( 
                                 label: Text('Veg'),
                                 labelStyle: TextStyle(
                                     color: _isVeg != null
@@ -228,6 +227,8 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                         color: Colors.grey,
                         thickness: 1.0,
                       ),
+                      SizedBox(height: 5),
+
                       SizedBox(height: 5),
                       // Customizables
                       Column(
