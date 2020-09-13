@@ -1,3 +1,4 @@
+import 'package:antiq/views/category_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,8 +15,6 @@ import './views/shop_info.dart';
 import './views/error/error_page.dart';
 import './providers/connectivity_provider.dart';
 import './views/add_menu_items.dart';
-import './views/edit_category.dart';
-import './views/shop_menu_items.dart';
 import './views/bottom_navigation_bar.dart';
 import './widgets/ordered_history.dart';
 import './views/authentication/newsignin_page.dart';
@@ -87,8 +86,9 @@ class _MyAppState extends State<MyApp> {
             backgroundColor: CustomThemeData.blueColorShade1,
           ),
         ),
+        home: CustomBottomNavigationBar(),
         routes: <String, WidgetBuilder>{
-          '/': (context) => SplashScreen(),
+          // '/': (context) => SplashScreen(),
           '/logInPage': (context) => NewSignInPage(),
           '/registration': (context) => Registration(),
           '/homePage': (context) => CustomBottomNavigationBar(),
@@ -96,8 +96,7 @@ class _MyAppState extends State<MyApp> {
           '/profilepage': (context) => ProfilePage(),
           '/orderHistory': (context) => OrderedHistory(),
           AddMenuItems.routeName: (context) => AddMenuItems(),
-          ShopMenuItems.routeName: (context) => ShopMenuItems(),
-          EditCategory.routeName: (context) => EditCategory(),
+          CategoryPageView.routeName: (context) => CategoryPageView(),
         },
         onUnknownRoute: (settings) => MaterialPageRoute(
           builder: (context) => ErrorPage(),

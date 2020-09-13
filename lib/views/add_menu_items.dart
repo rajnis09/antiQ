@@ -17,10 +17,18 @@ class AddMenuItems extends StatefulWidget {
 }
 
 class _AddMenuItemsState extends State<AddMenuItems> {
-  String _categoryName, _itemName, _description, _imagePath;
-  bool _isVeg, _autoValidate = false, _isNetworkCall = false;
-  double _price;
+  String _categoryName,
+      _itemName,
+      _description,
+      _imagePath,
+      _dropdownValue,
+      _type;
+  bool _isVeg, _autoValidate = false, _isNetworkCall = false, _avail = false;
+  double _price, _quantity, _availPrice;
   final _customizablesWidgets = <Widget>[];
+  final _availabilityPrice = <double>[];
+  final _availabilityQty = <double>[];
+  final _availabilityType = <String>[];
   final List<String> _customizablesName = [];
   final List<double> _customizablesPrice = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -54,9 +62,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -149,7 +155,6 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           // maxLines: 2,
                           decoration: InputDecoration(
                             labelText: 'Description',
-                            
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.green),
                             ),
@@ -175,7 +180,6 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                               _price = double.parse(newValue),
                         ),
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -186,7 +190,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           ),
                           Wrap(
                             children: [
-                              FilterChip( 
+                              FilterChip(
                                 label: Text('Veg'),
                                 labelStyle: TextStyle(
                                     color: _isVeg != null
@@ -227,65 +231,17 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                         color: Colors.grey,
                         thickness: 1.0,
                       ),
-                      SizedBox(height: 5),
-
-                      SizedBox(height: 5),
-                      // Customizables
+                      SizedBox(height: 10),
                       Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          _customizablesWidgets.length,
-                          (index) {
-                            bool flag =
-                                index == _customizablesWidgets.length - 1;
-                            return Card(
-                              elevation: 3.0,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    color: Colors.green,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Customizable detail',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.cancel,
-                                              color: flag
-                                                  ? Colors.white
-                                                  : Colors.transparent,
-                                            ),
-                                            onPressed: flag
-                                                ? () {
-                                                    setState(() {
-                                                      _customizablesWidgets
-                                                          .removeLast();
-                                                      _customizablesName
-                                                          .removeLast();
-                                                      _customizablesPrice
-                                                          .removeLast();
-                                                    });
-                                                  }
-                                                : null,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  _customizablesWidgets[index],
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                        children: createWidgetList(
+                          'Customizable detail',
+                          _customizablesWidgets,
+                          rest: [
+                            _customizablesName,
+                            _customizablesPrice,
+                          ],
+                        ).toList(),
                       ),
                       SizedBox(height: 15),
                       OutlineButton.icon(
@@ -301,6 +257,215 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                 _customizablesWidgets.length));
                             _customizablesName.add('');
                             _customizablesPrice.add(0.0);
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+
+                      /// [Availabilities widget]
+                      Column(
+                        children: List.generate(
+                          _availabilityType.length,
+                          (index) {
+                            final flag = index == _availabilityType.length - 1;
+                            return Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                side: BorderSide(
+                                  width: 2,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              child: ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        '${_availabilityQty[index].floor()} ${_availabilityType[index]}'),
+                                    Text('\u20B9 ${_availabilityPrice[index]}')
+                                  ],
+                                ),
+                                trailing: IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    color:
+                                        flag ? Colors.grey : Colors.transparent,
+                                  ),
+                                  onPressed: flag
+                                      ? () {
+                                          setState(() {
+                                            // _availabilityWidgets.removeLast();
+                                            _availabilityType.removeLast();
+                                            _availabilityPrice.removeLast();
+                                            _availabilityQty.removeLast();
+                                          });
+                                        }
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+
+                      /// [Availabilities form]
+                      if (_avail)
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: Colors.green,
+                            ),
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                width: double.infinity,
+                                color: Colors.green,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Add Availabilities',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.cancel,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () =>
+                                          setState(() => _avail = false),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    DropdownButton<String>(
+                                      hint: Text('Select any value'),
+                                      value: _dropdownValue,
+                                      onChanged: (value) {
+                                        setState(() => _dropdownValue = value);
+                                      },
+                                      selectedItemBuilder:
+                                          (BuildContext context) {
+                                        return [
+                                          'Grams',
+                                          'Plate',
+                                          'Pieces',
+                                          'Other'
+                                        ].map<Widget>((String item) {
+                                          return Text(item);
+                                        }).toList();
+                                      },
+                                      items: [
+                                        'Grams',
+                                        'Plate',
+                                        'Pieces',
+                                        'Other'
+                                      ].map((String item) {
+                                        return DropdownMenuItem<String>(
+                                          child: Text(item),
+                                          value: item,
+                                        );
+                                      }).toList(),
+                                    ),
+                                    if (_dropdownValue == "Other")
+                                      TextFormField(
+                                        decoration: InputDecoration(
+                                          labelText: 'Type',
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.green),
+                                          ),
+                                        ),
+                                        validator: validator.validateStrings,
+                                        onChanged: (value) =>
+                                            setState(() => _type = value),
+                                      ),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        labelText: 'Quantity',
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.green),
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        final val = double.parse(value);
+                                        validator.isEmpty(value);
+                                        if (val == 0)
+                                          return "Quantity cannot be 0";
+                                        else if (val < 0)
+                                          return "Quantity cannot be negative";
+
+                                        return null;
+                                      },
+                                      onChanged: (value) => setState(() =>
+                                          _quantity = double.parse(value)),
+                                    ),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        prefixText: '\u20B9 ',
+                                        labelText: 'Availability Price',
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.green),
+                                        ),
+                                      ),
+                                      validator: validator.validatePrice,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (value) => setState(
+                                        () => _availPrice = double.parse(value),
+                                      ),
+                                    ),
+                                    RaisedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _availabilityType.add(
+                                              _dropdownValue == "Other"
+                                                  ? _type
+                                                  : _dropdownValue);
+                                          _availabilityQty.add(_quantity);
+                                          _availabilityPrice.add(_availPrice);
+                                          _avail = false;
+                                        });
+                                      },
+                                      child: Text('Add'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      // SizedBox(height: 5),
+                      OutlineButton.icon(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        borderSide: BorderSide(color: Colors.green, width: 1.8),
+                        splashColor: Colors.greenAccent,
+                        icon: Icon(Icons.add),
+                        label: Text('Add Availabilities'),
+                        onPressed: () {
+                          setState(() {
+                            _avail = true;
                           });
                         },
                       ),
@@ -342,27 +507,31 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                               TextStyle(color: Colors.yellow),
                                         )));
                                       } else if (_imagePath == null) {
-                                        _scaffoldKey.currentState
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                          'Select an image by pressing on it',
-                                          style:
-                                              TextStyle(color: Colors.yellow),
-                                        )));
+                                        _scaffoldKey.currentState.showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Select an image by pressing on it',
+                                              style: TextStyle(
+                                                  color: Colors.yellow),
+                                            ),
+                                          ),
+                                        );
+                                      } else if (_availabilityQty.length == 0) {
+                                        _scaffoldKey.currentState.showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Availability can\'t be empty. Please add atleast one availability',
+                                              style: TextStyle(
+                                                  color: Colors.yellow),
+                                            ),
+                                          ),
+                                        );
                                       } else {
                                         _formKey.currentState.save();
-                                        // menuItem.addMenuItem(
-                                        //     _categoryName,
-                                        //     _itemName,
-                                        //     _description,
-                                        //     _imagePath,
-                                        //     _price,
-                                        //     _isVeg,
-                                        //     _customizablesName,
-                                        //     _customizablesPrice);
-                                        // print(_imagePath);
                                         final List<Customizables>
                                             customizables = [];
+                                        final List<ItemAvailibilty>
+                                            availabilities = [];
                                         for (int i = 0;
                                             i < _customizablesName.length;
                                             i++) {
@@ -372,7 +541,18 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                           );
                                           customizables.add(item);
                                         }
+                                        for (int i = 0;
+                                            i < _availabilityQty.length;
+                                            i++) {
+                                          final item = ItemAvailibilty(
+                                            _availabilityType[i],
+                                            _availabilityQty[i],
+                                            _availabilityPrice[i],
+                                          );
+                                          availabilities.add(item);
+                                        }
                                         final item = Item(
+                                          itemId: UniqueKey(),
                                           categoryName: _categoryName,
                                           itemName: _itemName,
                                           description: _description,
@@ -380,13 +560,12 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                           isVeg: _isVeg,
                                           price: _price,
                                           customizables: customizables,
+                                          differentAvailibility: availabilities,
                                         );
-                                        provider.addItem(item).then(
-                                              (_) =>
-                                                  Navigator.of(context).pop(),
-                                            );
-
-                                        // print('validated');
+                                        provider.addItem(item)
+                                          ..then(
+                                            (_) => Navigator.of(context).pop(),
+                                          );
                                       }
                                     } else {
                                       setState(() {
@@ -406,6 +585,54 @@ class _AddMenuItemsState extends State<AddMenuItems> {
       ),
     );
   }
+
+  List<Widget> createWidgetList(String title, List<Widget> widgetList,
+          {List<List> rest}) =>
+      List.generate(
+        widgetList.length,
+        (index) {
+          bool flag = index == widgetList.length - 1;
+          return Card(
+            elevation: 3.0,
+            child: Column(
+              children: [
+                Container(
+                  color: Colors.green,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.cancel,
+                            color: flag ? Colors.white : Colors.transparent,
+                          ),
+                          onPressed: flag
+                              ? () {
+                                  setState(() {
+                                    widgetList.removeLast();
+                                    rest[0].removeLast();
+                                    rest[1].removeLast();
+                                  });
+                                }
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                widgetList[index],
+              ],
+            ),
+          );
+        },
+      );
 
   Widget customizableItemField(int index) {
     return Padding(

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/item_model.dart';
@@ -17,6 +18,39 @@ class CategoryItemsProvider extends ChangeNotifier {
   List<Map<String, Object>> get data {
     return [..._localData];
   }
+
+  List<Item> getByCategory(String category) {
+    var present = false;
+    for (var item in _localData) {
+      if (item['categoryName'] == category) {
+        present = true;
+        break;
+      }
+    }
+
+    if (present)
+      return _localData.firstWhere(
+          (element) => element['categoryName'] == category)['categoryItems'];
+
+    return [];
+  }
+
+  // int getLengthByCategory(String category) {
+  //   var present = false;
+  //   for (var item in _localData) {
+  //     if (item['categoryName'] == category) {
+  //       present = true;
+  //       break;
+  //     }
+  //   }
+
+  //   if (present)
+  //     return (_localData.firstWhere((element) =>
+  //             element['categoryName'] == category)['categoryItems'] as List)
+  //         .length;
+
+  //   return 0;
+  // }
 
   Future<bool> addItem(Item item) {
     var present = false;
@@ -45,5 +79,46 @@ class CategoryItemsProvider extends ChangeNotifier {
 
     notifyListeners();
     return Future.value(true);
+  }
+
+  Future<bool> changePrice(String categoryName, int itemId, double newPrice) {
+    print(newPrice);
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i]['categoryName'] == categoryName) {
+        var lst = _localData[i]['categoryItems'] as List;
+        for (var j = 0; j < lst.length; j++) {
+          if (lst[i].itemId == itemId) {
+            lst[i] = Item(
+              categoryName: lst[i].categoryName,
+              customizables: lst[i].customizables,
+              description: lst[i].description,
+              imageURL: lst[i].imageURL,
+              isVeg: lst[i].isVeg,
+              itemId: lst[i].itemId,
+              itemName: lst[i].itemName,
+              price: newPrice,
+            );
+            break;
+          }
+        }
+      }
+    }
+    notifyListeners();
+    return Future.value(true);
+  }
+
+  void deleteItem(String categoryName, UniqueKey itemId) {
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i]['categoryName'] == categoryName) {
+        if ((_localData[i]['categoryItems'] as List).length == 1) {
+          _localData.removeAt(i);
+        } else {
+          (_localData[i]['categoryItems'] as List)
+              .removeWhere((element) => element.itemId == itemId);
+        }
+      }
+    }
+
+    notifyListeners();
   }
 }

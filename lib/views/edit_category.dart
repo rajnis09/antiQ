@@ -1,56 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/dismissible_item.dart';
+import '../providers/category_items_provider.dart';
 
-class EditCategory extends StatefulWidget {
-  static const routeName = "editCategory";
+class EditCategory extends StatelessWidget {
+  EditCategory(this.pageController, this.categoryName);
 
-  @override
-  _EditCategoryState createState() => _EditCategoryState();
-}
+  final PageController pageController;
+  final String categoryName;
 
-class _EditCategoryState extends State<EditCategory> {
+  Future<bool> pop() {
+    pageController.animateToPage(
+      0,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
+    return Future.value(false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    final title = data['categoryName'];
-    final items = data['categoryItems'] as List;
+    final items =
+        Provider.of<CategoryItemsProvider>(context).getByCategory(categoryName);
+    // final items = data['categoryItems'] as List;
+
+    if (items.length == 0) {
+      pop();
+    }
 
     var appBar = AppBar(
-      title: Text('Category Edit'),
+      title: Text('Edit $categoryName'),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: pop,
+      ),
     );
-    var mediaQuery = MediaQuery.of(context);
-    return Scaffold(
-      appBar: appBar,
-      body: Column(
-        children: <Widget>[
-          LimitedBox(
-            maxHeight: 50,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 20,
-                ),
-              ),
-            ),
+    return WillPopScope(
+      onWillPop: pop,
+      child: Scaffold(
+        appBar: appBar,
+        body: ListView.builder(
+          itemBuilder: (_, idx) => DismissibleItem(
+            item: items[idx],
           ),
-          Container(
-            height: mediaQuery.size.height -
-                appBar.preferredSize.height -
-                50 -
-                mediaQuery.padding.top,
-            child: ListView.builder(
-              itemBuilder: (_, idx) => DismissibleItem(
-                item: items[idx],
-              ),
-              itemCount: items.length,
-            ),
-          ),
-        ],
+          itemCount: items.length,
+        ),
       ),
     );
   }

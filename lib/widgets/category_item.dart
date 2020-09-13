@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'item_unit.dart';
-import '../models/item_model.dart';
+import './item_unit.dart';
 import './icon_label_button.dart';
-import '../views/edit_category.dart';
+import '../models/item_model.dart';
 
 class CategoryItem extends StatelessWidget {
   CategoryItem({
     Key key,
     @required this.categoryName,
     @required this.categoryItems,
+    this.onEdit,
   }) : super(key: key);
 
   final String categoryName;
   final List<Item> categoryItems;
+  final Function(String) onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +34,7 @@ class CategoryItem extends StatelessWidget {
         trailing: IconLabelButton(
           icon: Icons.edit,
           label: 'Edit',
-          onPressed: () => Navigator.of(context).pushNamed(
-            EditCategory.routeName,
-            arguments: {
-              'categoryName': categoryName,
-              'categoryItems': categoryItems,
-            },
-          ),
+          onPressed: () => onEdit(categoryName),
           color: Colors.blue,
         ),
         children: categoryItems
