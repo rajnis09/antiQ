@@ -434,6 +434,8 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                           print('Response is $response');
                                           switch (response) {
                                             case 0:
+                                              await provider
+                                                  .fetchLatestProfile();
                                               Navigator.pushReplacementNamed(
                                                   context, HomePage.routeName);
                                               break;
@@ -521,6 +523,7 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
         print('Response is in verification completed $response');
         switch (response) {
           case 0:
+            await provider.fetchLatestProfile();
             Navigator.pushReplacementNamed(context, HomePage.routeName);
             break;
           case 1:
