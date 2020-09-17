@@ -6,11 +6,16 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../providers/profile_provider.dart';
+import '../../models/profile_models.dart';
+import '../../views/splash_Screen.dart';
 import '../../utils/auth/auth_handler.dart';
 import '../../utils/theme/theme_data.dart';
 import '../../models/list_profile_section.dart';
+import '../../widgets/cached_donwloadable_image.dart';
 
 class ProfilePage extends StatefulWidget {
+  static const routeName = '/profilepage';
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -20,15 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
   bool selected = false;
   bool isPersonal = true;
   String tag1, tag2;
-
-  // profile:
-  // shop:
-  //  SignUpWithPhoneForm data = SignUpWithPhoneForm(
-  //   firstName: "Yash",
-  //   lastName: "Khandelwal",
-  //   phoneNumber: "9876543210",
-  //   email: "khandelwalyashykc@gmail.com",
-  // );
 
   createSection(String title, IconData icon, Function onpressed) {
     return ListProfileSection(title, icon, onpressed);
@@ -56,67 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _presentBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Wrap(
-        children: <Widget>[
-          SizedBox(height: 8),
-          _buildBottomSheetRow(
-            context,
-            Icons.camera_alt,
-            'Take Photo',
-            getImagefromCamera,
-          ),
-          _buildBottomSheetRow(
-            context,
-            Icons.image,
-            'Choose from Gallery',
-            getImagefromGallery,
-          ),
-          _buildBottomSheetRow(
-            context,
-            Icons.delete,
-            'Remove',
-            () {
-              setState(() {
-                selected = false;
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomSheetRow(
-    BuildContext context,
-    IconData icon,
-    String text,
-    Function ontap,
-  ) =>
-      InkWell(
-        onTap: ontap,
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Icon(
-                icon,
-                color: Colors.grey[700],
-              ),
-            ),
-            SizedBox(width: 8),
-            Text(text),
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProfileProvider>(context);
-    provider.fetchSellerProfile();
+    final SellerProfile profile =
+        Provider.of<ProfileServiceProvider>(context).profile;
     List<bool> data = ModalRoute.of(context).settings.arguments;
     isPersonal = data[0];
     tag1 = data[1] ? 'bigger' : 'smaller';
@@ -142,8 +81,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Icons.exit_to_app,
         () {
           authHandler.signOut();
-          provider.removeLocalSessionSellerProfile();
-          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, SplashScreen.routeName, (route) => false);
         },
       ),
     ];
@@ -208,33 +147,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                     GestureDetector(
                                       child: Hero(
                                         tag: tag1,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey.shade400,
-                                                  width: 1.5),
-                                              shape: BoxShape.circle,
-                                              image: isPersonal
-                                                  ? DecorationImage(
-                                                      image: selected == false
-                                                          ? NetworkImage(
-                                                              provider.profile
-                                                                  .imageURL)
-                                                          : FileImage(_image),
-                                                      fit: BoxFit.cover)
-                                                  : DecorationImage(
-                                                      image: selected == false
-                                                          ? AssetImage(
-                                                              "assets/images/restaurant.png")
-                                                          : FileImage(_image),
-                                                      fit: BoxFit.cover)),
-                                          width: 40,
-                                          height: 40,
-                                        ),
+                                        child: isPersonal
+                                            ? cachedDownloadableImage(
+                                                imageURL: profile.shop.imageURL,
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.cover,
+                                                border: Border.all(
+                                                    color: Colors.grey.shade400,
+                                                    width: 2),
+                                                shape: BoxShape.circle)
+                                            : cachedDownloadableImage(
+                                                imageURL: profile.user.imageURL,
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.cover,
+                                                border: Border.all(
+                                                    color: Colors.grey.shade400,
+                                                    width: 2),
+                                                shape: BoxShape.circle),
                                       ),
                                       onTap: () =>
                                           Navigator.pushReplacementNamed(
-                                              context, '/profilepage',
+                                              context, ProfilePage.routeName,
                                               arguments: [
                                             !data[0],
                                             !data[1],
@@ -258,8 +193,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Text(
                                 isPersonal
-                                    ? provider.profile.name
-                                    : provider.profile.shopName,
+                                    ? profile.user.name
+                                    : profile.shop.name,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -267,8 +202,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Text(
                                 isPersonal
-                                    ? provider.profile.phoneNumber
-                                    : provider.profile.shopPhoneNumber,
+                                    ? profile.user.phoneNumber
+                                    : profile.shop.phoneNumber,
                                 style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontSize: 16,
@@ -276,24 +211,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Text(
                                 isPersonal
-                                    ? provider.profile.email
-                                    : provider.profile.shopAddress,
+                                    ? profile.user.email
+                                    : profile.shop.address,
                                 style: TextStyle(
                                     color: Colors.grey.shade700, fontSize: 14),
                               ),
                               Container(
                                   child: !isPersonal
                                       ? Text(
-                                          provider.profile.shopDescription,
-                                          style: TextStyle(
-                                              color: Colors.grey.shade700,
-                                              fontSize: 14),
-                                        )
-                                      : null),
-                              Container(
-                                  child: !isPersonal
-                                      ? Text(
-                                          "GSTIN",
+                                          profile.shop.description,
                                           style: TextStyle(
                                               color: Colors.grey.shade700,
                                               fontSize: 14),
@@ -368,37 +294,34 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: <Widget>[
                                 Hero(
                                   tag: tag2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey.shade400,
-                                            width: 2),
-                                        shape: BoxShape.circle,
-                                        image: isPersonal
-                                            ? DecorationImage(
-                                                image: selected == false
-                                                    ? AssetImage(
-                                                        "assets/images/restaurant.png")
-                                                    : FileImage(_image),
-                                                fit: BoxFit.cover)
-                                            : DecorationImage(
-                                                image: selected == false
-                                                    ? NetworkImage(provider
-                                                        .profile.imageURL)
-                                                    : FileImage(_image),
-                                                fit: BoxFit.cover)),
-                                    width: 100,
-                                    height: 100,
-                                  ),
+                                  child: isPersonal
+                                      ? cachedDownloadableImage(
+                                          imageURL: profile.user.imageURL,
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                          border: Border.all(
+                                              color: Colors.grey.shade400,
+                                              width: 2),
+                                          shape: BoxShape.circle)
+                                      : cachedDownloadableImage(
+                                          imageURL: profile.shop.imageURL,
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                          border: Border.all(
+                                              color: Colors.grey.shade400,
+                                              width: 2),
+                                          shape: BoxShape.circle),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomRight,
                                   child: GestureDetector(
-                                    child: new CircleAvatar(
+                                    child: CircleAvatar(
                                       backgroundColor:
                                           CustomThemeData.blackColorShade1,
                                       radius: 18.0,
-                                      child: new Icon(
+                                      child: Icon(
                                         Icons.camera_alt,
                                         color: Colors.white,
                                       ),
@@ -423,4 +346,61 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  void _presentBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Wrap(
+        children: <Widget>[
+          SizedBox(height: 8),
+          _buildBottomSheetRow(
+            context,
+            Icons.camera_alt,
+            'Take Photo',
+            getImagefromCamera,
+          ),
+          _buildBottomSheetRow(
+            context,
+            Icons.image,
+            'Choose from Gallery',
+            getImagefromGallery,
+          ),
+          _buildBottomSheetRow(
+            context,
+            Icons.delete,
+            'Remove',
+            () {
+              setState(() {
+                selected = false;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
+
+Widget _buildBottomSheetRow(
+  BuildContext context,
+  IconData icon,
+  String text,
+  Function ontap,
+) =>
+    InkWell(
+      onTap: ontap,
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Icon(
+              icon,
+              color: Colors.grey[700],
+            ),
+          ),
+          SizedBox(width: 8),
+          Text(text),
+        ],
+      ),
+    );

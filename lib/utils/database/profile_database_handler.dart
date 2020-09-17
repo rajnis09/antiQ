@@ -2,8 +2,8 @@ import 'package:flutter/services.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../models/profile_models.dart';
 import '../../utils/auth/auth_handler.dart';
-import '../../models/seller_profile.dart';
 
 class DataBaseHandler {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -40,28 +40,31 @@ class DataBaseHandler {
   Future<void> createUserFirstTime(SellerProfile profile) async {
     _firestore.runTransaction((transaction) async {
       transaction.set(
-          _firestore.collection('sellersAuth').doc(profile.phoneNumber),
-          {'name': profile.name, 'DOC': DateTime.now()});
+          _firestore.collection('sellers').doc(profile.user.phoneNumber),
+          profile.toJson());
     });
     _firestore.runTransaction((transaction) async {
-      transaction.set(_firestore.collection('sellers').doc(profile.phoneNumber),
-          profile.toJson());
+      transaction.set(
+          _firestore.collection('sellersAuth').doc(profile.user.phoneNumber), {
+        'name': profile.user.name,
+        'shopName': profile.shop.name,
+        'DOC': DateTime.now()
+      });
     });
   }
 
-  Future<SellerProfile> fetchProfile() async {
+  Future<DocumentSnapshot> fetchProfile() async {
     try {
-      String phoneNumber = authHandler.getCurrentUser().phoneNumber;
-      phoneNumber = phoneNumber.substring(3);
-      print(phoneNumber);
-      DocumentSnapshot snapshot =
-          await _firestore.collection('sellers').doc(phoneNumber).get();
-      SellerProfile profile = SellerProfile.fromMap(snapshot.data());
-      return profile;
+      if (authHandler.getCurrentUser() != null) {
+        String phoneNumber = authHandler.getCurrentUser().phoneNumber;
+        phoneNumber = phoneNumber.substring(3);
+        print(phoneNumber);
+        return await _firestore.collection('sellers').doc(phoneNumber).get();
+      }
     } on PlatformException catch (e) {
       print('${e.code} ${e.message}');
-      return null;
     }
+    return null;
   }
 }
 

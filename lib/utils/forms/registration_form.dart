@@ -1,3 +1,4 @@
+import 'package:antiq/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -5,10 +6,11 @@ import 'package:provider/provider.dart';
 
 import './validators.dart';
 import '../theme/theme_data.dart';
-import '../../providers/profile_provider.dart';
 import '../../widgets/custom_button.dart';
 
 class Registration extends StatefulWidget {
+  static const routeName = '/registration';
+
   final String phoneNumber;
 
   const Registration({Key key, this.phoneNumber}) : super(key: key);
@@ -29,7 +31,7 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProfileProvider>(context);
+    final provider = Provider.of<ProfileServiceProvider>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(

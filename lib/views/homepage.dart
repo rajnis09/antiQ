@@ -5,13 +5,14 @@ import './accepting_orders.dart';
 import './more.dart';
 import './category_page_view.dart';
 
-class CustomBottomNavigationBar extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  static const routeName = '/homePage';
+
   @override
-  _CustomBottomNavigationBarState createState() =>
-      _CustomBottomNavigationBarState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
+class _HomePageState extends State<HomePage> {
   var _selectedPageIndex = 0;
 
   @override

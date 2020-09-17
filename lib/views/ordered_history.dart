@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../providers/sample_order_data.dart';
-import 'package:antiq/models/order_details.dart';
+import '../models/order_details.dart';
 
-class OrderedHistory extends StatefulWidget {
+class OrderHistory extends StatefulWidget {
+  static const routeName = '/orderHistory';
+
   @override
-  _OrderedHistoryState createState() => _OrderedHistoryState();
+  _OrderHistoryState createState() => _OrderHistoryState();
 }
 
-class _OrderedHistoryState extends State<OrderedHistory> {
+class _OrderHistoryState extends State<OrderHistory> {
   List<OrderDetails> item = [];
   List<double> earningPerOrder = [];
   double totalEarnings = 0;

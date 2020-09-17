@@ -28,7 +28,6 @@ dependencies:
   firebase_auth:
   firebase_messaging:
   cloud_firestore:
-  # encryptions:
   provider:
   connectivity:
   cached_network_image:

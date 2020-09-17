@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-// import './orders.dart';
 import './add_menu_items.dart';
 import '../widgets/category_item.dart';
 import '../providers/category_items_provider.dart';

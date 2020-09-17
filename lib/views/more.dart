@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../views/ordered_history.dart';
+import '../views/profile/profile_page.dart';
 import '../widgets/custom_switch.dart';
 
 class More extends StatefulWidget {
@@ -105,7 +107,7 @@ class _MoreState extends State<More> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context)
-                    .pushNamed('/profilepage', arguments: [true, true, false]);
+                    .pushNamed(ProfilePage.routeName, arguments: [true, true, false]);
               },
               child: Container(
                 width: double.infinity,
@@ -159,7 +161,7 @@ class _MoreState extends State<More> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed('/orderHistory');
+                Navigator.of(context).pushNamed(OrderHistory.routeName);
               },
               child: Container(
                 width: double.infinity,

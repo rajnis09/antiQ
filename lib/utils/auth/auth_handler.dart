@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class Auth {
-  static final String appMadeFor = 'seller';
   final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   firebase_auth.User _user;
   firebase_auth.FirebaseAuth get auth => _auth;
@@ -25,6 +24,7 @@ class Auth {
       _user = _auth.currentUser;
     } catch (e) {
       print("authHandler: Error in userReload $e");
+      _user = null;
     }
   }
 

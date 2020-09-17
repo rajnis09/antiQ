@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
+import '../../views/homepage.dart';
 import '../../widgets/logo_widget.dart';
 import '../../widgets/custom_button.dart';
 import '../../utils/theme/theme_data.dart';
@@ -14,13 +15,14 @@ import '../../providers/profile_provider.dart';
 import '../../utils/forms/registration_form.dart';
 import '../../utils/database/profile_database_handler.dart';
 
-class NewSignInPage extends StatefulWidget {
+class SignInPage extends StatefulWidget {
+  static const routeName = '/signInPage';
+
   @override
-  _NewSignInPageState createState() => _NewSignInPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _NewSignInPageState extends State<NewSignInPage>
-    with TickerProviderStateMixin {
+class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
   AnimationController _phoneNumberController;
   Animation<Offset> _phoneNumberOffset;
   AnimationController _otpController;
@@ -59,7 +61,8 @@ class _NewSignInPageState extends State<NewSignInPage>
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProfileProvider>(context);
+    final ProfileServiceProvider provider =
+        Provider.of<ProfileServiceProvider>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
@@ -431,15 +434,13 @@ class _NewSignInPageState extends State<NewSignInPage>
                                           print('Response is $response');
                                           switch (response) {
                                             case 0:
-                                              await provider
-                                                  .fetchSellerProfile();
                                               Navigator.pushReplacementNamed(
-                                                  context, '/homePage');
+                                                  context, HomePage.routeName);
                                               break;
                                             case 1:
                                               await provider.createSeller();
                                               Navigator.pushReplacementNamed(
-                                                  context, '/homePage');
+                                                  context, HomePage.routeName);
                                               break;
                                             case 2:
                                               notificationDialog(
@@ -506,7 +507,7 @@ class _NewSignInPageState extends State<NewSignInPage>
     );
   }
 
-  void _phoneNumberLogin(provider) async {
+  void _phoneNumberLogin(ProfileServiceProvider provider) async {
     int response = 0;
     await authHandler.auth.verifyPhoneNumber(
       phoneNumber: '+91$_phoneNumber',
@@ -520,12 +521,11 @@ class _NewSignInPageState extends State<NewSignInPage>
         print('Response is in verification completed $response');
         switch (response) {
           case 0:
-            await provider.fetchSellerProfile();
-            Navigator.pushReplacementNamed(context, '/homePage');
+            Navigator.pushReplacementNamed(context, HomePage.routeName);
             break;
           case 1:
             await provider.createSeller();
-            Navigator.pushReplacementNamed(context, '/homePage');
+            Navigator.pushReplacementNamed(context, HomePage.routeName);
             break;
           case 2:
             notificationDialog(context, 'Error',
@@ -568,14 +568,14 @@ class _NewSignInPageState extends State<NewSignInPage>
         });
       },
       codeSent: (verificationId, forceResendingToken) {
-        setState(() {
-          _isNetworkCall = false;
-        });
         _verificationId = verificationId;
         print('code Sent');
         _phoneNumberController.forward();
         _currentActive = 2;
         _otpController.forward();
+        setState(() {
+          _isNetworkCall = false;
+        });
       },
       codeAutoRetrievalTimeout: (verificationId) {
         print('Auto Retrieval failed');

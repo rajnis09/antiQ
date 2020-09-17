@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../models/profile_models.dart';
 import '../utils/database/profile_database_handler.dart';
 
-import '../models/seller_profile.dart';
-
-class ProfileProvider extends ChangeNotifier {
+class ProfileServiceProvider extends ChangeNotifier {
   SellerProfile _sellerProfile;
+  static String defaultImageURL =
+      "https://drive.google.com/uc?export=download&id=1hBu6cfZvlVFm3-AB8PBx2K4AZoiAXf4e";
 
   SellerProfile get profile => _sellerProfile;
 
@@ -21,29 +24,30 @@ class ProfileProvider extends ChangeNotifier {
       String shopDescription,
       String shopAddress) {
     _sellerProfile = SellerProfile(
-        name,
-        email,
-        "https://drive.google.com/uc?export=download&id=1hBu6cfZvlVFm3-AB8PBx2K4AZoiAXf4e",
-        phoneNumber,
-        shopName,
-        shopOwnerName,
-        shopPhoneNumber,
-        shopDescription,
-        shopAddress);
+      user: User(
+          name: name,
+          email: email,
+          imageURL: defaultImageURL,
+          phoneNumber: phoneNumber),
+      shop: Shop(
+          name: shopName,
+          imageURL: defaultImageURL,
+          ownerName: shopOwnerName,
+          phoneNumber: shopPhoneNumber,
+          description: shopDescription,
+          address: shopAddress),
+    );
+  }
+
+  Future<void> fetchLatestProfile() async {
+    DocumentSnapshot snap = await dataBaseHandler.fetchProfile();
+    _sellerProfile = SellerProfile.fromMap(snap.data());
+    print(_sellerProfile.user.name);
+    notifyListeners();
   }
 
   Future<void> createSeller() async {
     await dataBaseHandler.createUserFirstTime(_sellerProfile);
     notifyListeners();
-  }
-
-  Future<void> fetchSellerProfile() async {
-    _sellerProfile = await dataBaseHandler.fetchProfile();
-    print('${_sellerProfile.name} ${_sellerProfile.phoneNumber}');
-    notifyListeners();
-  }
-
-  void removeLocalSessionSellerProfile() {
-    _sellerProfile = null;
   }
 }

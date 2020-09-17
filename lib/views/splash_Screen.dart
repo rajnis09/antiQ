@@ -1,9 +1,16 @@
+import 'package:antiq/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+
+import '../views/homepage.dart';
+import '../views/authentication/sign_in_page.dart';
 import '../utils/auth/auth_handler.dart';
 import '../utils/theme/theme_data.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const routeName = '/';
   const SplashScreen({
     Key key,
   }) : super(key: key);
@@ -19,13 +26,18 @@ class _SplashScreenState extends State<SplashScreen> {
     initializingApplication();
   }
 
-  void initializingApplication() {
-    Future.delayed(Duration(seconds: 1), () {
+  void initializingApplication() async {
+    Future.delayed(Duration(seconds: 1), () async {
+      await Firebase.initializeApp();
+      await authHandler.userReload();
       var user = authHandler.getCurrentUser();
       if (user != null) {
-        Navigator.pushReplacementNamed(context, '/homePage');
+        final provider =
+            Provider.of<ProfileServiceProvider>(context, listen: false);
+        await provider.fetchLatestProfile();
+        Navigator.pushReplacementNamed(context, HomePage.routeName);
       } else {
-        Navigator.pushReplacementNamed(context, '/logInPage');
+        Navigator.pushReplacementNamed(context, SignInPage.routeName);
       }
     });
   }
