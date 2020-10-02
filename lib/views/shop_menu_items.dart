@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import './add_menu_items.dart';
 import '../widgets/category_item.dart';
-import '../providers/category_items_provider.dart';
+import '../providers/category_provider.dart';
 
 class ShopMenuItems extends StatelessWidget {
   ShopMenuItems(this.pageController, this.onEdit);
@@ -14,7 +14,7 @@ class ShopMenuItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = Provider.of<CategoryItemsProvider>(context).data;
+    final items = Provider.of<CategoryProvider>(context).data;
     return Scaffold(
       appBar: AppBar(
         title: Text('AntiQ'),

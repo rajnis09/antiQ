@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/item_model.dart';
 
-class CategoryItemsProvider extends ChangeNotifier {
+class CategoryProvider extends ChangeNotifier {
   final List<Map<String, Object>> _localData = [
     // {
     //   'categoryName': 'categoryName',
