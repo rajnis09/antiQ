@@ -1,108 +1,104 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../providers/sample_order_data.dart';
+
 class CountDownTimer extends StatefulWidget {
-  const CountDownTimer({
+  CountDownTimer({
     Key key,
-    int secondsRemaining,
-    this.countDownTimerStyle,
+    this.seconds,
+    this.text,
+    this.orderId,
     this.whenTimeExpires,
-    this.countDownFormatter,
-  })  : secondsRemaining = secondsRemaining,
-        super(key: key);
+    this.leftTime,
+  }) : super(key: key);
 
-  final int secondsRemaining;
+  final int seconds;
+  final String text;
+  final int orderId;
+  final DateTime leftTime;
   final Function whenTimeExpires;
-  final Function countDownFormatter;
-  final TextStyle countDownTimerStyle;
 
-  State createState() => new _CountDownTimerState();
+  @override
+  _CountDownTimerState createState() => _CountDownTimerState();
 }
 
-class _CountDownTimerState extends State<CountDownTimer>
-    with TickerProviderStateMixin {
-  AnimationController _controller;
-
-  Duration duration;
-  String formatHHMMSS(int seconds) {
-  int hours = (seconds / 3600).truncate();
-  seconds = (seconds % 3600).truncate();
-  int minutes = (seconds / 60).truncate();
-
-  String hoursStr = (hours).toString().padLeft(2, '0');
-  String minutesStr = (minutes).toString().padLeft(2, '0');
-  String secondsStr = (seconds % 60).toString().padLeft(2, '0');
-
-  if (hours == 0) {
-    return "$minutesStr:$secondsStr";
-  }
-
-  return "$hoursStr:$minutesStr:$secondsStr";
-}
-
-  String get timerDisplayString {
-    Duration duration = _controller.duration * _controller.value;
-    return widget.countDownFormatter != null
-        ? widget.countDownFormatter(duration.inSeconds)
-        : formatHHMMSS(duration.inSeconds);
-    
-  }
+class _CountDownTimerState extends State<CountDownTimer> {
+  int _seconds;
+  Timer _timer;
 
   @override
   void initState() {
+    _seconds = widget.seconds;
+    if (widget.leftTime != null && _seconds > 0) {
+      int diff = DateTime.now().difference(widget.leftTime).inSeconds;
+      if (diff > _seconds)
+        _seconds = 0;
+      else
+        _seconds -= diff;
+    }
+    _countDown();
     super.initState();
-    duration = new Duration(seconds: widget.secondsRemaining);
-    _controller = new AnimationController(
-      vsync: this,
-      duration: duration,
-    );
-    _controller.reverse(from: widget.secondsRemaining.toDouble());
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed ||
-          status == AnimationStatus.dismissed) {
-        widget.whenTimeExpires();
-      }
+  }
+
+  String formatHHMMSS(int seconds) {
+    int hours = (seconds / 3600).truncate();
+    seconds = (seconds % 3600).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    String hoursStr = (hours).toString().padLeft(2, '0');
+    String minutesStr = (minutes).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    if (hours == 0) {
+      return "$minutesStr:$secondsStr";
+    }
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  String get timerDisplayString {
+    if (_seconds >= 0) {
+      Provider.of<SampleData>(
+        context,
+        listen: false,
+      ).updateTimer(widget.orderId, _seconds);
+    }
+    return formatHHMMSS(_seconds);
+  }
+
+  void _countDown() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_seconds <= 0) {
+          _timer.cancel();
+          widget.whenTimeExpires();
+        } else {
+          _seconds -= 1;
+        }
+      });
     });
   }
 
   @override
-  void didUpdateWidget(CountDownTimer oldWidget) {
-    if (widget.secondsRemaining != oldWidget.secondsRemaining) {
-      setState(() {
-        duration = new Duration(seconds: widget.secondsRemaining);
-        _controller.dispose();
-        _controller = new AnimationController(
-          vsync: this,
-          duration: duration,
-        );
-        _controller.reverse(from: widget.secondsRemaining.toDouble());
-        _controller.addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
-            widget.whenTimeExpires();
-          } else if (status == AnimationStatus.dismissed) {
-            print("Animation Complete");
-          }
-        });
-      });
-    }
-  }
-
-  @override
   void dispose() {
-    _controller.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Center(
-        child: AnimatedBuilder(
-            animation: _controller,
-            builder: (_, Widget child) {
-              return Text(
-                
-                "ORDER READY ($timerDisplayString)",
-                style: widget.countDownTimerStyle,
-              );
-            }));
+    return Center(
+      child: Text(
+        '${widget.text} ($timerDisplayString)',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 }

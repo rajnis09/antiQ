@@ -1,10 +1,10 @@
-import 'package:antiq/providers/category_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './item_unit.dart';
 import './all_Alert_Dialogs.dart';
 import '../models/item_model.dart';
+import '../providers/category_provider.dart';
 
 class DismissibleItem extends StatelessWidget {
   const DismissibleItem({
@@ -16,7 +16,7 @@ class DismissibleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CategoryItemsProvider>(context);
+    final provider = Provider.of<CategoryProvider>(context);
     return Dismissible(
       key: UniqueKey(),
       confirmDismiss: (direction) {

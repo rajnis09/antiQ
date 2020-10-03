@@ -1,13 +1,12 @@
-import 'package:antiq/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-import '../views/homepage.dart';
 import '../views/authentication/sign_in_page.dart';
 import '../utils/auth/auth_handler.dart';
 import '../utils/theme/theme_data.dart';
+import '../providers/profile_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/';
@@ -35,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
         final provider =
             Provider.of<ProfileServiceProvider>(context, listen: false);
         await provider.fetchLatestProfile();
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
       } else {
         Navigator.pushReplacementNamed(context, SignInPage.routeName);
       }

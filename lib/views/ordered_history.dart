@@ -14,7 +14,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   List<OrderDetails> item = [];
   List<double> earningPerOrder = [];
   double totalEarnings = 0;
-  final orders = SampleData.fetchAll();
+  final orders = SampleData().orders;
 
   @override
   void initState() {

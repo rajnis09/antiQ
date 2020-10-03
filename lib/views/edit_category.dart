@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/dismissible_item.dart';
-import '../providers/category_items_provider.dart';
+import '../providers/category_provider.dart';
 
 class EditCategory extends StatelessWidget {
   EditCategory(this.pageController, this.categoryName);
@@ -23,8 +23,7 @@ class EditCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items =
-        Provider.of<CategoryItemsProvider>(context).getByCategory(categoryName);
-    // final items = data['categoryItems'] as List;
+        Provider.of<CategoryProvider>(context).getByCategory(categoryName);
 
     if (items.length == 0) {
       pop();
