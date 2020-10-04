@@ -12,6 +12,7 @@ import '../../utils/forms/validators.dart';
 import '../../utils/auth/auth_handler.dart';
 import '../../widgets/all_Alert_Dialogs.dart';
 import '../../providers/profile_provider.dart';
+import '../../providers/menu_items_provider.dart';
 import '../../utils/forms/registration_form.dart';
 import '../../utils/database/profile_database_handler.dart';
 
@@ -61,6 +62,7 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final ProfileServiceProvider provider =
         Provider.of<ProfileServiceProvider>(context);
+    final menuProvider = Provider.of<MenuItemsProvider>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
@@ -266,7 +268,8 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                                         .save();
                                                     print(
                                                         'Validated +91$_phoneNumber');
-                                                    _phoneNumberLogin(provider);
+                                                    _phoneNumberLogin(
+                                                        provider, menuProvider);
                                                   } else {
                                                     setState(() {
                                                       _isNetworkCall = false;
@@ -288,7 +291,8 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                                     .save();
                                                 print(
                                                     'Validated +91$_phoneNumber');
-                                                _phoneNumberLogin(provider);
+                                                _phoneNumberLogin(
+                                                    provider, menuProvider);
                                               }
                                             } else {
                                               setState(() {
@@ -435,11 +439,17 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                             case 0:
                                               await provider
                                                   .fetchLatestProfile();
+                                              menuProvider.setMenuDBHandler(
+                                                  provider.profile.shop
+                                                      .phoneNumber);
                                               Navigator.pushReplacementNamed(
                                                   context, Routes.homePage);
                                               break;
                                             case 1:
                                               await provider.createSeller();
+                                              menuProvider.setMenuDBHandler(
+                                                  provider.profile.shop
+                                                      .phoneNumber);
                                               Navigator.pushReplacementNamed(
                                                   context, Routes.homePage);
                                               break;
@@ -508,7 +518,8 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
     );
   }
 
-  void _phoneNumberLogin(ProfileServiceProvider provider) async {
+  void _phoneNumberLogin(
+      ProfileServiceProvider provider, MenuItemsProvider menuProvider) async {
     int response = 0;
     await authHandler.auth.verifyPhoneNumber(
       phoneNumber: '+91$_phoneNumber',
@@ -523,10 +534,12 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
         switch (response) {
           case 0:
             await provider.fetchLatestProfile();
+            menuProvider.setMenuDBHandler(provider.profile.shop.phoneNumber);
             Navigator.pushReplacementNamed(context, Routes.homePage);
             break;
           case 1:
             await provider.createSeller();
+            menuProvider.setMenuDBHandler(provider.profile.shop.phoneNumber);
             Navigator.pushReplacementNamed(context, Routes.homePage);
             break;
           case 2:
