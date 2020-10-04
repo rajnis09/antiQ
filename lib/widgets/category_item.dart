@@ -42,7 +42,7 @@ class CategoryItem extends StatelessWidget {
               (item) => ItemUnit(
                 itemName: item.itemName,
                 price: item.price,
-                imageURL: item.imageURL,
+                imageURL: item.imageURL ,
                 isVeg: item.isVeg,
                 customizables: item.customizables,
               ),

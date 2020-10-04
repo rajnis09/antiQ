@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/profile_models.dart';
 import '../../utils/auth/auth_handler.dart';
 
-class DataBaseHandler {
+class ProfileDataBaseHandler {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<bool> isAllowed(String phoneNumber) async {
@@ -40,12 +40,14 @@ class DataBaseHandler {
   Future<void> createUserFirstTime(SellerProfile profile) async {
     _firestore.runTransaction((transaction) async {
       transaction.set(
-          _firestore.collection('sellers').doc(profile.user.phoneNumber),
-          profile.toJson());
+          _firestore.collection('sellers').doc(profile.shop.phoneNumber), {
+        'profile': profile.toJson(),
+        'menuItemsCounter': profile.menuItemsCounter
+      });
     });
     _firestore.runTransaction((transaction) async {
       transaction.set(
-          _firestore.collection('sellersAuth').doc(profile.user.phoneNumber), {
+          _firestore.collection('sellersAuth').doc(profile.shop.phoneNumber), {
         'name': profile.user.name,
         'shopName': profile.shop.name,
         'DOC': DateTime.now()
@@ -66,6 +68,16 @@ class DataBaseHandler {
     }
     return null;
   }
+
+  void updateData(SellerProfile profile) async {
+    await _firestore
+        .collection('sellers')
+        .doc(profile.shop.phoneNumber)
+        .update({
+      'profile': profile.toJson(),
+      'menuItemsCounter': profile.menuItemsCounter
+    });
+  }
 }
 
-final DataBaseHandler dataBaseHandler = DataBaseHandler();
+final ProfileDataBaseHandler profileDataBaseHandler = ProfileDataBaseHandler();

@@ -26,8 +26,9 @@ dependencies:
   firebase_core:
   google_fonts:
   firebase_auth:
-  firebase_messaging:
   cloud_firestore:
+  firebase_messaging:
+  firebase_storage: ^4.0.1
   provider:
   connectivity:
   cached_network_image:

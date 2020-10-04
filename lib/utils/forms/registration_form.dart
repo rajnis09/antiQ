@@ -1,4 +1,3 @@
-import 'package:antiq/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,10 +6,9 @@ import 'package:provider/provider.dart';
 import './validators.dart';
 import '../theme/theme_data.dart';
 import '../../widgets/custom_button.dart';
+import '../../providers/profile_provider.dart';
 
 class Registration extends StatefulWidget {
-  static const routeName = '/registration';
-
   final String phoneNumber;
 
   const Registration({Key key, this.phoneNumber}) : super(key: key);
@@ -25,7 +23,7 @@ class _RegistrationState extends State<Registration> {
       _shopOwnerName,
       _shopAddress,
       _shopDescription,
-      _shopPhoneNumber;
+      _phoneNumber;
   bool _autoValidate = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -65,33 +63,30 @@ class _RegistrationState extends State<Registration> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TextFormField(
-                        // enabled: false,
-                        readOnly: true,
-                        initialValue: widget.phoneNumber,
+                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         style: CustomThemeData.latoFont
                             .copyWith(color: Colors.grey),
                         decoration: InputDecoration(
                           labelText: 'Phone Number',
                           prefixIcon: Icon(
                             Icons.phone,
-                            color: CustomThemeData.greyColorShade,
+                            color: CustomThemeData.blackColorShade2,
                           ),
-                          labelStyle: CustomThemeData.latoFont
-                              .copyWith(color: Colors.grey),
                           prefix: Text("+91 "),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(
-                                color: CustomThemeData.blackColorShade2,
+                                color: CustomThemeData.greyColorShade,
                                 width: 2.0),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(
-                                color: CustomThemeData.blackColorShade2,
+                                color: CustomThemeData.greyColorShade,
                                 width: 2.0),
                           ),
                         ),
+                        onSaved: (newValue) => _phoneNumber = newValue,
                         validator: validator.validatePhoneNumber,
                         keyboardType: TextInputType.number,
                       ),
@@ -122,30 +117,33 @@ class _RegistrationState extends State<Registration> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TextFormField(
-                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                        // enabled: false,
+                        readOnly: true,
+                        initialValue: widget.phoneNumber,
                         style: CustomThemeData.latoFont
                             .copyWith(color: Colors.grey),
                         decoration: InputDecoration(
                           labelText: 'Shop Phone Number',
                           prefixIcon: Icon(
                             Icons.phone,
-                            color: CustomThemeData.blackColorShade2,
+                            color: CustomThemeData.greyColorShade,
                           ),
+                          labelStyle: CustomThemeData.latoFont
+                              .copyWith(color: Colors.grey),
                           prefix: Text("+91 "),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(
-                                color: CustomThemeData.greyColorShade,
+                                color: CustomThemeData.blackColorShade2,
                                 width: 2.0),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(
-                                color: CustomThemeData.greyColorShade,
+                                color: CustomThemeData.blackColorShade2,
                                 width: 2.0),
                           ),
                         ),
-                        onSaved: (newValue) => _shopPhoneNumber = newValue,
                         validator: validator.validatePhoneNumber,
                         keyboardType: TextInputType.number,
                       ),
@@ -181,10 +179,10 @@ class _RegistrationState extends State<Registration> {
                           provider.createNewSellerObject(
                               _name,
                               _email,
-                              widget.phoneNumber,
+                              _phoneNumber,
                               _shopName,
                               _shopOwnerName,
-                              _shopPhoneNumber,
+                              widget.phoneNumber,
                               _shopDescription,
                               _shopAddress);
                           Navigator.of(context).pop(true);

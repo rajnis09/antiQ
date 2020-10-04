@@ -102,7 +102,7 @@ Future<String> otpRetrieveDialog(BuildContext context) {
 }
 
 Future<bool> scheduleDialog(BuildContext context) {
-  return showModalBottomSheet(
+  return showModalBottomSheet<bool>(
     context: context,
     builder: (ctx) => AutoAcceptForm(),
   );

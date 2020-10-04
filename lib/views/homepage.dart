@@ -6,7 +6,6 @@ import './more.dart';
 import './category_page_view.dart';
 
 class HomePage extends StatefulWidget {
-  static const routeName = '/homePage';
 
   @override
   _HomePageState createState() => _HomePageState();

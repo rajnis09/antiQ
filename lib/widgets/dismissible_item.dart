@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 
 import './item_unit.dart';
 import './all_Alert_Dialogs.dart';
 import '../models/item_model.dart';
-import '../providers/category_provider.dart';
+import '../providers/menu_items_provider.dart';
 
 class DismissibleItem extends StatelessWidget {
   const DismissibleItem({
@@ -16,13 +17,13 @@ class DismissibleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CategoryProvider>(context);
+    final provider = Provider.of<MenuItemsProvider>(context);
     return Dismissible(
       key: UniqueKey(),
       confirmDismiss: (direction) {
         return confirmDeleteDialog(context).then((value) {
           if (value) {
-            provider.deleteItem(item.categoryName, item.itemId);
+            provider.deleteMenuItem(item.itemId, item.categoryName);
             return true;
           }
           return false;

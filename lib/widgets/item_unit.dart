@@ -1,11 +1,10 @@
-import 'dart:io';
-
-import 'package:antiq/models/item_model.dart';
 import 'package:flutter/material.dart';
 
+import 'all_Alert_Dialogs.dart';
+import 'cached_donwloadable_image.dart';
 import 'food_type_icon.dart';
 import 'icon_label_button.dart';
-import 'all_Alert_Dialogs.dart';
+import '../models/item_model.dart';
 
 class ItemUnit extends StatefulWidget {
   const ItemUnit({
@@ -79,13 +78,19 @@ class _ItemUnitState extends State<ItemUnit> {
                     topLeft: Radius.circular(10.0),
                     bottomLeft: Radius.circular(10.0),
                   ),
-                  image: DecorationImage(
-                    image: FileImage(File(widget.imageURL)),
-                    fit: BoxFit.cover,
-                  ),
+                  // image: DecorationImage(
+                  //   image: FileImage(File(widget.imageURL)),
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
                 height: CONTAINER_HEIGHT,
                 width: CONTAINER_HEIGHT,
+                child: cachedDownloadableImage(
+                  imageURL: widget.imageURL,
+                  height: CONTAINER_HEIGHT,
+                  width: CONTAINER_HEIGHT,
+                  fit: BoxFit.cover,
+                ),
               ),
               Flexible(
                 flex: 1,
@@ -184,7 +189,7 @@ class _ItemUnitState extends State<ItemUnit> {
                 // TODO: PUT changed time into databse
                 scheduleDialog(context).then(
                   (value) {
-                    if (value)
+                    if (value != null && value)
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Scheduled Sucessfully'),

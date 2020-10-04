@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
-import '../../views/homepage.dart';
+import '../../routes/routes.dart';
 import '../../widgets/logo_widget.dart';
 import '../../widgets/custom_button.dart';
 import '../../utils/theme/theme_data.dart';
@@ -16,8 +16,6 @@ import '../../utils/forms/registration_form.dart';
 import '../../utils/database/profile_database_handler.dart';
 
 class SignInPage extends StatefulWidget {
-  static const routeName = '/signInPage';
-
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -247,10 +245,11 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                               print(
                                                   _phoneNumberTextEditingController
                                                       .text);
-                                              int result = await dataBaseHandler
-                                                  .nextRoute(
-                                                      _phoneNumberTextEditingController
-                                                          .text);
+                                              int result =
+                                                  await profileDataBaseHandler
+                                                      .nextRoute(
+                                                          _phoneNumberTextEditingController
+                                                              .text);
                                               if (result == 0) {
                                                 Navigator.of(context)
                                                     .push(MaterialPageRoute(
@@ -437,12 +436,12 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                                               await provider
                                                   .fetchLatestProfile();
                                               Navigator.pushReplacementNamed(
-                                                  context, HomePage.routeName);
+                                                  context, Routes.homePage);
                                               break;
                                             case 1:
                                               await provider.createSeller();
                                               Navigator.pushReplacementNamed(
-                                                  context, HomePage.routeName);
+                                                  context, Routes.homePage);
                                               break;
                                             case 2:
                                               notificationDialog(
@@ -524,11 +523,11 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
         switch (response) {
           case 0:
             await provider.fetchLatestProfile();
-            Navigator.pushReplacementNamed(context, HomePage.routeName);
+            Navigator.pushReplacementNamed(context, Routes.homePage);
             break;
           case 1:
             await provider.createSeller();
-            Navigator.pushReplacementNamed(context, HomePage.routeName);
+            Navigator.pushReplacementNamed(context, Routes.homePage);
             break;
           case 2:
             notificationDialog(context, 'Error',

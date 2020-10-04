@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../views/ordered_history.dart';
-import '../views/profile/profile_page.dart';
+import '../routes/routes.dart';
 
 class More extends StatefulWidget {
   @override
@@ -106,7 +105,7 @@ class _MoreState extends State<More> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(ProfilePage.routeName,
+                Navigator.of(context).pushNamed(Routes.profilePage,
                     arguments: [true, true, false]);
               },
               child: Container(
@@ -161,7 +160,7 @@ class _MoreState extends State<More> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(OrderHistory.routeName);
+                Navigator.of(context).pushNamed(Routes.orderHistory);
               },
               child: Container(
                 width: double.infinity,

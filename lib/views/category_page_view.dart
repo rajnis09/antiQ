@@ -4,8 +4,6 @@ import './shop_menu_items.dart';
 import './edit_category.dart';
 
 class CategoryPageView extends StatefulWidget {
-  static const routeName = "/categoryPageView";
-
   @override
   _CategoryPageViewState createState() => _CategoryPageViewState();
 }

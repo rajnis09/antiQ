@@ -3,19 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SellerProfile {
   final User user;
   final Shop shop;
+  final menuItemsCounter;
   DocumentReference reference;
 
-  SellerProfile({this.user, this.shop});
+  SellerProfile({this.user, this.shop, this.menuItemsCounter});
 
   Map<String, dynamic> toJson() =>
       {'user': this.user.toJson(), 'shop': this.shop.toJson()};
 
-  SellerProfile.fromMap(Map<String, dynamic> map, {this.reference})
+  SellerProfile.fromMap(Map<String, dynamic> map, int menuItemsCounter,
+      {this.reference})
       : this.user = User.fromMap(map['user']),
-        this.shop = Shop.fromMap(map['shop']);
+        this.shop = Shop.fromMap(map['shop']),
+        this.menuItemsCounter = menuItemsCounter;
 
-  SellerProfile.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  // SellerProfile.fromSnapshot(DocumentSnapshot snapshot)
+  //     : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }
 
 class User {

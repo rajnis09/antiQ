@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import './add_menu_items.dart';
+import '../routes/routes.dart';
 import '../widgets/category_item.dart';
-import '../providers/category_provider.dart';
+import '../providers/menu_items_provider.dart';
 
 class ShopMenuItems extends StatelessWidget {
   ShopMenuItems(this.pageController, this.onEdit);
@@ -14,26 +14,27 @@ class ShopMenuItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = Provider.of<CategoryProvider>(context).data;
+    final menuItems = Provider.of<MenuItemsProvider>(context).menuItems;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AntiQ'),
-      ),
-      body: items.length == 0
+      appBar: AppBar(title: Text('AntiQ'), elevation: 0.0),
+      body: menuItems == null || menuItems.length == 0
           ? Center(
               child: Text('You have no items available, start adding some!'),
             )
           : ListView.builder(
-              itemBuilder: (_, index) => CategoryItem(
-                categoryName: items[index]['categoryName'],
-                categoryItems: items[index]['categoryItems'],
-                onEdit: onEdit,
-              ),
-              itemCount: items.length,
+              itemBuilder: (_, index) {
+                String category = menuItems.keys.elementAt(index);
+                // print(category);
+                return CategoryItem(
+                  categoryName: category,
+                  categoryItems: menuItems[category],
+                  onEdit: onEdit,
+                );
+              },
+              itemCount: menuItems.length,
             ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(AddMenuItems.routeName),
+        onPressed: () => Navigator.of(context).pushNamed(Routes.addMenuItems),
         label: Text('ADD'),
         icon: Icon(Icons.add),
       ),

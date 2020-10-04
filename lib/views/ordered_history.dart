@@ -4,7 +4,6 @@ import '../providers/sample_order_data.dart';
 import '../models/order_details.dart';
 
 class OrderHistory extends StatefulWidget {
-  static const routeName = '/orderHistory';
 
   @override
   _OrderHistoryState createState() => _OrderHistoryState();

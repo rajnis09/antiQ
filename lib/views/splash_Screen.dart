@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-import '../views/authentication/sign_in_page.dart';
+import '../routes/routes.dart';
 import '../utils/auth/auth_handler.dart';
 import '../utils/theme/theme_data.dart';
 import '../providers/profile_provider.dart';
+import '../providers/menu_items_provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  static const routeName = '/';
   const SplashScreen({
     Key key,
   }) : super(key: key);
@@ -34,8 +34,12 @@ class _SplashScreenState extends State<SplashScreen> {
         final provider =
             Provider.of<ProfileServiceProvider>(context, listen: false);
         await provider.fetchLatestProfile();
+        final menuProvider =
+            Provider.of<MenuItemsProvider>(context, listen: false);
+        menuProvider.setMenuDBHandler(provider.profile.shop.phoneNumber);
+        Navigator.pushReplacementNamed(context, Routes.homePage);
       } else {
-        Navigator.pushReplacementNamed(context, SignInPage.routeName);
+        Navigator.pushReplacementNamed(context, Routes.signInPage);
       }
     });
   }

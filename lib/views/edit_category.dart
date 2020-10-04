@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/dismissible_item.dart';
-import '../providers/category_provider.dart';
+import '../providers/menu_items_provider.dart';
 
 class EditCategory extends StatelessWidget {
   EditCategory(this.pageController, this.categoryName);
@@ -23,9 +23,11 @@ class EditCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items =
-        Provider.of<CategoryProvider>(context).getByCategory(categoryName);
+        Provider.of<MenuItemsProvider>(context).menuItems[categoryName];
 
-    if (items.length == 0) {
+    if (items == null) {
+      pop();
+    } else if (items.length == 0) {
       pop();
     }
 
@@ -40,12 +42,14 @@ class EditCategory extends StatelessWidget {
       onWillPop: pop,
       child: Scaffold(
         appBar: appBar,
-        body: ListView.builder(
-          itemBuilder: (_, idx) => DismissibleItem(
-            item: items[idx],
-          ),
-          itemCount: items.length,
-        ),
+        body: items != null
+            ? ListView.builder(
+                itemBuilder: (_, idx) => DismissibleItem(
+                  item: items[idx],
+                ),
+                itemCount: items.length,
+              )
+            : Center(child: CircularProgressIndicator()),
       ),
     );
   }

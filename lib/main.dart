@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
-import './routes/routes.dart';
+import './routes/router.dart';
 import './providers/provider_service.dart';
 import './utils/theme/app_theme.dart';
 

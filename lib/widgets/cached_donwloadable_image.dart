@@ -21,14 +21,15 @@ Widget cachedDownloadableImage({
         height: height,
         width: width,
         decoration: BoxDecoration(
-          border: border ?? BorderSide.none,
+          border: border ?? Border(),
           shape: shape ?? BoxShape.rectangle,
           image: DecorationImage(
               image: imageProvider, fit: fit ?? BoxFit.scaleDown),
         ),
       ),
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) =>
+          Icon(Icons.error_outline, color: Colors.red),
     ),
   );
 }

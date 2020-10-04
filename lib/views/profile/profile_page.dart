@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../routes/routes.dart';
 import '../../providers/profile_provider.dart';
 import '../../models/profile_models.dart';
-import '../../views/splash_Screen.dart';
 import '../../utils/auth/auth_handler.dart';
 import '../../utils/theme/theme_data.dart';
 import '../../models/list_profile_section.dart';
 import '../../widgets/cached_donwloadable_image.dart';
 
 class ProfilePage extends StatefulWidget {
-  static const routeName = '/profilepage';
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -82,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
         () {
           authHandler.signOut();
           Navigator.pushNamedAndRemoveUntil(
-              context, SplashScreen.routeName, (route) => false);
+              context, Routes.splashScreenPage, (route) => false);
         },
       ),
     ];
@@ -169,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       onTap: () =>
                                           Navigator.pushReplacementNamed(
-                                              context, ProfilePage.routeName,
+                                              context, Routes.profilePage,
                                               arguments: [
                                             !data[0],
                                             !data[1],
