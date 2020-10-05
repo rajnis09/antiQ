@@ -53,7 +53,11 @@ class MenuItemsProvider extends ChangeNotifier {
     await _menuHandler.removeDocument(itemId);
     // Here not refreshing data from the database as the item can be removed from the locally itself
     // So no requirement of the refreshment from database
-    _fetchedData[category].removeWhere((element) => element.itemId == itemId);
+    if (_fetchedData[category].length == 1) {
+      _fetchedData.remove(category);
+    } else {
+      _fetchedData[category].removeWhere((element) => element.itemId == itemId);
+    }
     notifyListeners();
   }
 }
